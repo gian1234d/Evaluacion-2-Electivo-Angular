@@ -10,3 +10,8 @@ export const pool = mysql.createPool({
   connectionLimit: 10,
   timezone: 'Z',
 });
+
+// TIMESTAMP se intercambia en UTC; Angular lo muestra en la hora local.
+pool.pool.on('connection', connection => {
+  connection.query("SET time_zone = '+00:00'");
+});

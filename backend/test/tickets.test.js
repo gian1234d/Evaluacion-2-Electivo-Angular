@@ -47,6 +47,7 @@ test('CRUD, validaciones y persistencia de tickets', async () => {
     const ticket = await creado.json();
     id = ticket.id;
     assert.ok(ticket.fechaRegistro);
+    assert.ok(Math.abs(Date.now() - Date.parse(ticket.fechaRegistro)) < 60000, 'La fecha debe corresponder al instante actual');
     assert.equal(ticket.descripcion, datos.descripcion);
     assert.ok((await (await fetch(base)).json()).some(t => t.id === id));
     assert.equal((await fetch(`${base}/${id}`, enviar('PUT', { ...datos, estado: 'resuelto' }))).status, 200);
@@ -62,5 +63,33 @@ test('CRUD, validaciones y persistencia de tickets', async () => {
   } finally {
     if (id && server?.exitCode === null) await fetch(`${base}/${id}`, { method: 'DELETE' }).catch(() => {});
     if (server?.exitCode === null) await detener();
+  }
+});
+
+test('la API responde sin filtrar detalles cuando MySQL no está disponible', { timeout: 10000 }, async () => {
+  const server = spawn(process.execPath, ['src/index.js'], {
+    cwd: process.cwd(), env: { ...process.env, PORT: '0', DB_PORT: '1' },
+  });
+  try {
+    const base = await new Promise((resolve, reject) => {
+      let output = '';
+      server.stdout.on('data', chunk => {
+        output += chunk;
+        const match = output.match(/http:\/\/localhost:(\d+)/);
+        if (match) resolve(`http://localhost:${match[1]}`);
+      });
+      server.once('error', reject);
+      server.once('exit', code => reject(new Error(`API terminó: ${code}`)));
+    });
+    const health = await fetch(`${base}/api/health`);
+    assert.equal(health.status, 503);
+    assert.equal((await health.json()).database, 'disconnected');
+    const listado = await fetch(`${base}/api/tickets`);
+    assert.equal(listado.status, 500);
+    assert.deepEqual(await listado.json(), { message: 'No se pudo completar la operación. Intenta nuevamente.' });
+  } finally {
+    const salida = once(server, 'exit');
+    server.kill();
+    await salida;
   }
 });
