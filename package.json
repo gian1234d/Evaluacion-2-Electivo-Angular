@@ -1,0 +1,11 @@
+{
+  "name": "evaluacion-2-electivo-angular",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "npm --prefix frontend start",
+    "build": "npm --prefix frontend run build",
+    "backend": "npm --prefix backend run dev",
+    "install:all": "npm --prefix frontend ci && npm --prefix backend ci"
+  }
+}
