@@ -1,4 +1,4 @@
-<a class="back" routerLink="/tickets">← Volver a tickets</a><div class="heading"><div><p class="eyebrow">SOLICITUD DE ATENCIÓN</p><h1>{{ id === null ? 'Nuevo ticket' : 'Editar ticket #' + id }}</h1><p>Todos los campos son obligatorios.</p></div></div>
+<a class="back" routerLink="/tickets">← Volver a tickets</a><div class="heading"><div><h1>{{ id === null ? 'Nuevo ticket' : 'Editar ticket #' + id }}</h1><p>Todos los campos son obligatorios.</p></div></div>
 @if (error()) { <div class="alert" role="alert">{{ error() }}</div> }
 @if (cargando()) { <p role="status">Cargando ticket…</p> }
 <form [formGroup]="form" (ngSubmit)="guardar()" class="card">

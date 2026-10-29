@@ -1,4 +1,4 @@
-<div class="heading"><div><p class="eyebrow">CENTRO DE SOPORTE</p><h1>Tickets de soporte</h1><p>Consulta y gestiona las solicitudes de atención.</p></div><a class="button" routerLink="/tickets/nuevo">+ Nuevo ticket</a></div>
+<div class="heading"><div><h1>Tickets de soporte</h1><p>Consulta y gestiona las solicitudes de atención.</p></div><a class="button" routerLink="/tickets/nuevo">+ Nuevo ticket</a></div>
 @if (error()) { <div class="alert" role="alert">{{ error() }} <button class="secondary" (click)="cargar()">Actualizar listado</button></div> }
 @if (cargando()) { <p role="status">Cargando tickets…</p> }
 @else if (!error() && !tickets().length) { <section class="empty"><h2>No hay tickets registrados</h2><p>Crea la primera solicitud para comenzar.</p><a routerLink="/tickets/nuevo">Registrar ticket</a></section> }
