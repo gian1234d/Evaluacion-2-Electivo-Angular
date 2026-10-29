@@ -1,0 +1,11 @@
+<div class="heading"><div><p class="eyebrow">CENTRO DE SOPORTE</p><h1>Tickets de soporte</h1><p>Consulta y gestiona las solicitudes de atención.</p></div><a class="button" routerLink="/tickets/nuevo">+ Nuevo ticket</a></div>
+@if (error()) { <div class="alert" role="alert">{{ error() }} <button class="secondary" (click)="cargar()">Actualizar listado</button></div> }
+@if (cargando()) { <p role="status">Cargando tickets…</p> }
+@else if (!error() && !tickets().length) { <section class="empty"><h2>No hay tickets registrados</h2><p>Crea la primera solicitud para comenzar.</p><a routerLink="/tickets/nuevo">Registrar ticket</a></section> }
+@else if (tickets().length) {
+<div class="table-wrap"><table><caption class="sr-only">Solicitudes de soporte registradas</caption><thead><tr><th>Ticket</th><th>Solicitante</th><th>Prioridad</th><th>Estado</th><th>Registro</th><th>Acciones</th></tr></thead><tbody>
+@for (ticket of tickets(); track ticket.id) {
+<tr><td><small>#{{ ticket.id }} · {{ ticket.categoria }}</small><strong>{{ ticket.asunto }}</strong><p class="description">{{ ticket.descripcion }}</p></td><td>{{ ticket.solicitante }}</td><td><span class="badge" [class]="'badge ' + ticket.prioridad">{{ ticket.prioridad }}</span></td><td><span class="badge" [class]="'badge ' + ticket.estado">{{ estados[ticket.estado] }}</span></td><td>{{ ticket.fechaRegistro | date:'dd/MM/yyyy HH:mm' }}</td><td><div class="actions"><a [routerLink]="['/tickets', ticket.id, 'editar']">Editar</a><button class="danger" [disabled]="eliminando() !== null" (click)="eliminar(ticket)">{{ eliminando() === ticket.id ? 'Eliminando…' : 'Eliminar' }}</button></div></td></tr>
+}
+</tbody></table></div>
+}
